@@ -1,0 +1,8 @@
+
+CREATE TABLE bottles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id TEXT NOT NULL,
+  content TEXT NOT NULL,
+  status TEXT DEFAULT 'waiting',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
