@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { pickBottle } from "../api";
-import type { Bottle, TelegramUser } from "../types";
+import type { Bottle } from "../types";
+import { getTelegramUser } from "../utils/telegram";
 
 const bottle = ref<Bottle | null>(null);
 
 const pick = async () => {
-  const tg = window.Telegram?.WebApp;
-  const user = tg?.initDataUnsafe.user as TelegramUser;
-
+  const user = getTelegramUser();
   if (!user) return;
 
   bottle.value = await pickBottle(user.id);

@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { sendBottle } from "../api";
-import type { TelegramUser } from "../types";
+import { getTelegramUser } from "../utils/telegram";
 
 const content = ref("");
 
 const send = async () => {
-  const tg = window.Telegram?.WebApp;
-  const user = tg?.initDataUnsafe.user as TelegramUser;
-
+  const user = getTelegramUser();
   if (!user) return;
 
   await sendBottle(user.id, content.value);
