@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@telegram-apps/sdk": "^3.11.8",
     "vue": "^3.5.34"
   },
   "devDependencies": {
