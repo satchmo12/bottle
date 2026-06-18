@@ -25,3 +25,12 @@ CREATE TABLE bottle_hits (
   bottle_id INTEGER,
   created_at INTEGER
 );
+
+-- 瓶子回复
+CREATE TABLE bottle_replies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  bottle_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  content TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);

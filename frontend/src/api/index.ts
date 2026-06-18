@@ -1,49 +1,64 @@
-import type { TelegramUser, Bottle } from "../types";
+import type { Bottle, TelegramUser } from "../types";
 
 const API = "https://bottle-api.d7895h.workers.dev";
 
-/**
- * Telegram 登录
- */
 export async function tgLogin(user: TelegramUser): Promise<{ ok: boolean }> {
-  const res = await fetch(`${API}/auth/telegram`, {
+  return requestJson<{ ok: boolean }>("/auth/telegram", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify(user)
   });
-
-  return res.json();
 }
 
-/**
- * 扔瓶子
- */
 export async function sendBottle(
-  user_id: number,
+  userId: number,
+  content: string
+): Promise<{ ok: boolean; bottle_id: number }> {
+  return requestJson<{ ok: boolean; bottle_id: number }>("/bottle/send", {
+    method: "POST",
+    body: JSON.stringify({ user_id: userId, content })
+  });
+}
+
+export async function pickBottle(userId: number): Promise<Bottle | null> {
+  return requestJson<Bottle | null>(`/bottle/pick?user_id=${userId}`);
+}
+
+export async function replyBottle(
+  bottleId: number,
+  userId: number,
   content: string
 ): Promise<{ ok: boolean }> {
-  const res = await fetch(`${API}/bottle/send`, {
+  return requestJson<{ ok: boolean }>("/bottle/reply", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ user_id, content })
+    body: JSON.stringify({
+      bottle_id: bottleId,
+      user_id: userId,
+      content
+    })
   });
-
-  return res.json();
 }
 
-/**
- * 捞瓶子
- */
-export async function pickBottle(
-  user_id: number
-): Promise<Bottle | null> {
-  const res = await fetch(
-    `${API}/bottle/pick?user_id=${user_id}`
-  );
+export async function getMyBottles(userId: number): Promise<Bottle[]> {
+  return requestJson<Bottle[]>(`/bottle/mine?user_id=${userId}`);
+}
 
-  return res.json();
+async function requestJson<T>(
+  path: string,
+  init?: RequestInit
+): Promise<T> {
+  const res = await fetch(`${API}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {})
+    }
+  });
+
+  const data = (await res.json()) as T & { error?: string };
+
+  if (!res.ok) {
+    throw new Error(data?.error || "请求失败");
+  }
+
+  return data;
 }
