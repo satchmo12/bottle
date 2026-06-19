@@ -54,11 +54,20 @@ async function requestJson<T>(
     }
   });
 
-  const data = (await res.json()) as T & { error?: string };
+  const contentType = res.headers.get("content-type") ?? "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson
+    ? ((await res.json()) as T & { error?: string })
+    : null;
+  const text = isJson ? "" : await res.text();
 
   if (!res.ok) {
-    throw new Error(data?.error || "请求失败");
+    throw new Error(
+      (data && "error" in data && data.error) ||
+        text ||
+        `请求失败（${res.status}）`
+    );
   }
 
-  return data;
+  return (data ?? (text as T)) as T;
 }

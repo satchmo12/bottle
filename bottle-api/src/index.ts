@@ -56,7 +56,7 @@ export default {
 			});
 		}
 
-		if (path.startsWith("/bottle")) {
+		if (path.startsWith("/bottle") || path.startsWith("/auth") || path.startsWith("/user")) {
 			await ensureBottleSchema(env.DB);
 		}
 
@@ -312,6 +312,24 @@ async function ensureBottleSchema(db: D1Database): Promise<void> {
 	if (ensuredSchemas.has(db)) return;
 
 	await db.exec(`
+		CREATE TABLE IF NOT EXISTS users (
+		  id INTEGER PRIMARY KEY AUTOINCREMENT,
+		  tg_id TEXT UNIQUE,
+		  username TEXT,
+		  first_name TEXT,
+		  avatar TEXT,
+		  banned INTEGER DEFAULT 0,
+		  created_at INTEGER
+		);
+
+		CREATE TABLE IF NOT EXISTS bottles (
+		  id INTEGER PRIMARY KEY AUTOINCREMENT,
+		  user_id INTEGER,
+		  content TEXT,
+		  created_at INTEGER,
+		  status TEXT DEFAULT 'active'
+		);
+
 		CREATE TABLE IF NOT EXISTS bottle_hits (
 		  id INTEGER PRIMARY KEY AUTOINCREMENT,
 		  user_id INTEGER,

@@ -1,9 +1,22 @@
 const path = require("path");
 const { Telegraf } = require("telegraf");
 
+if (typeof process.loadEnvFile === "function") {
+  process.loadEnvFile(path.join(__dirname, ".env"));
+}
 
-const botToken = "8866041432:AAF7vfyfyv5Pe0T4Nffn6SnGqQp-b9YObAc";
-const webAppUrl = "https://bottle.d7895h.workers.dev/";
+function getRequiredEnv(name) {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    throw new Error(`Missing ${name} in telegram-bot/.env`);
+  }
+
+  return value;
+}
+
+const botToken = getRequiredEnv("TELEGRAM_BOT_TOKEN");
+const webAppUrl = getRequiredEnv("WEB_APP_URL");
 
 if (!botToken) {
   throw new Error("Missing TELEGRAM_BOT_TOKEN (or legacy BOT_TOKEN_A) in apps/telegram-bot/.env");
