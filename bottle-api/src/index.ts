@@ -961,8 +961,8 @@ async function notifyThreadParticipant(
 		"漂流瓶有新的私聊消息",
 		`来自：${senderName || "对方"}`,
 		"",
-		`内容预览：${messagePreview}`,
-		"打开机器人里的小程序就能继续聊天。",
+		// `内容预览：${messagePreview}`,
+		// "打开机器人里的小程序就能继续聊天。",
 	].join("\n");
 
 	const replyMarkup = webAppUrl

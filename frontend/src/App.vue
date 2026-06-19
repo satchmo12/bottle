@@ -13,10 +13,10 @@ const user = ref<TelegramUser | null>(null);
 const activeTab = ref<TabKey>("send");
 const errorMessage = ref("");
 
-const tabs: Array<{ key: TabKey; label: string; description: string }> = [
-  { key: "send", label: "扔瓶子", description: "写一段话，交给海流。" },
-  { key: "pick", label: "捞瓶子", description: "看看今天会遇到谁。" },
-  { key: "mine", label: "聊天盒", description: "查看我扔的和我捞到的瓶子。" }
+const tabs: Array<{ key: TabKey; label: string; icon: string }> = [
+  { key: "send", label: "扔瓶子", icon: "投" },
+  { key: "pick", label: "捞瓶子", icon: "捞" },
+  { key: "mine", label: "消息盒", icon: "聊" }
 ];
 
 onMounted(async () => {
@@ -47,33 +47,35 @@ onMounted(async () => {
         在 Telegram 里写下一句话，把它交给陌生人；再从海上捞起别人的心情，回一封短短的回信。
       </p>
 
-      <div v-if="user" class="hero-user">
+      <!-- <div v-if="user" class="hero-user">
         <span class="avatar">{{ user.first_name.slice(0, 1) }}</span>
         <div>
           <strong>{{ user.first_name }}</strong>
           <p class="muted">@{{ user.username || `user_${user.id}` }}</p>
         </div>
-      </div>
+      </div> -->
 
       <p v-if="errorMessage" class="feedback error">{{ errorMessage }}</p>
     </section>
 
     <section v-if="user" class="app-grid">
-      <nav class="tab-rail">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          :class="['tab-button', { active: activeTab === tab.key }]"
-          @click="activeTab = tab.key"
-        >
-          <strong>{{ tab.label }}</strong>
-          <span>{{ tab.description }}</span>
-        </button>
-      </nav>
-
-      <Send v-if="activeTab === 'send'" :user="user" />
-      <Pick v-else-if="activeTab === 'pick'" :user="user" />
-      <Mine v-else :user="user" />
+      <div class="content-stage">
+        <Send v-if="activeTab === 'send'" :user="user" />
+        <Pick v-else-if="activeTab === 'pick'" :user="user" />
+        <Mine v-else :user="user" />
+      </div>
     </section>
+
+    <nav v-if="user" class="bottom-tabbar">
+      <button
+        v-for="tab in tabs"
+        :key="tab.key"
+        :class="['bottom-tab', { active: activeTab === tab.key }]"
+        @click="activeTab = tab.key"
+      >
+        <span class="bottom-tab-icon">{{ tab.icon }}</span>
+        <span class="bottom-tab-label">{{ tab.label }}</span>
+      </button>
+    </nav>
   </main>
 </template>

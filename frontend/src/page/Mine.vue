@@ -547,7 +547,7 @@ onBeforeUnmount(() => {
                 :disabled="isDeletingThread === bottle.id"
                 @click="removeThread('picked', bottle)"
               >
-                {{ isDeletingThread === bottle.id ? "删除中..." : "隐藏会话" }}
+                {{ isDeletingThread === bottle.id ? "删除中..." : "删除会话" }}
               </button>
             </article>
           </div>
