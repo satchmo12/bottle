@@ -320,36 +320,46 @@ async function ensureBottleSchema(db: D1Database): Promise<void> {
 		  avatar TEXT,
 		  banned INTEGER DEFAULT 0,
 		  created_at INTEGER
-		);
+		)
+	`);
 
+	await db.exec(`
 		CREATE TABLE IF NOT EXISTS bottles (
 		  id INTEGER PRIMARY KEY AUTOINCREMENT,
 		  user_id INTEGER,
 		  content TEXT,
 		  created_at INTEGER,
 		  status TEXT DEFAULT 'active'
-		);
+		)
+	`);
 
+	await db.exec(`
 		CREATE TABLE IF NOT EXISTS bottle_hits (
 		  id INTEGER PRIMARY KEY AUTOINCREMENT,
 		  user_id INTEGER,
 		  bottle_id INTEGER,
 		  created_at INTEGER
-		);
+		)
+	`);
 
+	await db.exec(`
 		CREATE TABLE IF NOT EXISTS bottle_replies (
 		  id INTEGER PRIMARY KEY AUTOINCREMENT,
 		  bottle_id INTEGER NOT NULL,
 		  user_id INTEGER NOT NULL,
 		  content TEXT NOT NULL,
 		  created_at INTEGER NOT NULL
-		);
+		)
+	`);
 
+	await db.exec(`
 		CREATE INDEX IF NOT EXISTS idx_bottle_hits_user_bottle
-		  ON bottle_hits (user_id, bottle_id);
+		ON bottle_hits (user_id, bottle_id)
+	`);
 
+	await db.exec(`
 		CREATE INDEX IF NOT EXISTS idx_bottle_replies_bottle_id
-		  ON bottle_replies (bottle_id);
+		ON bottle_replies (bottle_id)
 	`);
 
 	ensuredSchemas.add(db);
