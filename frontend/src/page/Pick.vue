@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { pickBottle, replyBottle } from "../api";
+import { pickBottle, sendBottleMessage } from "../api";
 import type { Bottle, TelegramUser } from "../types";
 
 const props = defineProps<{
@@ -30,7 +30,7 @@ const pick = async () => {
     }
 
     bottle.value = result;
-    message.value = "捞到了一个瓶子。你可以读完后留下一句回复。";
+    message.value = "捞到了一个瓶子。你可以先回一句，也可以稍后去“聊天盒”继续聊。";
   } catch (error) {
     bottle.value = null;
     errorMessage.value =
@@ -57,10 +57,14 @@ const submitReply = async () => {
   errorMessage.value = "";
 
   try {
-    await replyBottle(bottle.value.id, props.user.id, text);
+    if (!bottle.value.thread_id) {
+      throw new Error("没有可用的私聊线程。");
+    }
+
+    await sendBottleMessage(bottle.value.thread_id, props.user.id, text);
     replyContent.value = "";
     bottle.value = null;
-    message.value = "回复已经送回去了，去“我的瓶子”里看看有没有新的回声。";
+    message.value = "第一条消息已经送回去了，去“聊天盒”里继续对话吧。";
   } catch (error) {
     errorMessage.value =
       error instanceof Error ? error.message : "回复失败，请稍后再试。";
@@ -87,28 +91,28 @@ const submitReply = async () => {
 
     <div v-if="bottle" class="bottle-card featured">
       <div class="bottle-meta">
-        <span class="tag">漂流瓶 #{{ bottle.id }}</span>
+        <span class="tag">漂流瓶 #{{ bottle.bottle_id }}</span>
         <span class="muted">{{ new Date(bottle.created_at).toLocaleString("zh-CN") }}</span>
       </div>
       <p class="bottle-content">{{ bottle.content }}</p>
 
       <label class="field">
-        <span>给它一个回复</span>
+        <span>发出第一条消息</span>
         <textarea
           v-model="replyContent"
           maxlength="160"
-          placeholder="你的这句话，会成为瓶子主人的回声。"
+          placeholder="这会成为你们聊天的第一句话。"
         />
       </label>
 
       <div class="composer-footer">
-        <span class="hint">回复后，这个瓶子就会结束漂流。</span>
+        <span class="hint">发送后，它会出现在“聊天盒”的我捞到的瓶子里。</span>
         <button
           class="primary-button"
           :disabled="isReplying"
           @click="submitReply"
         >
-          {{ isReplying ? "送回海里..." : "发送回复" }}
+          {{ isReplying ? "发送中..." : "发送消息" }}
         </button>
       </div>
     </div>

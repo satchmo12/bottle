@@ -16,7 +16,7 @@ const errorMessage = ref("");
 const tabs: Array<{ key: TabKey; label: string; description: string }> = [
   { key: "send", label: "扔瓶子", description: "写一段话，交给海流。" },
   { key: "pick", label: "捞瓶子", description: "看看今天会遇到谁。" },
-  { key: "mine", label: "我的瓶子", description: "收下别人给你的回声。" }
+  { key: "mine", label: "聊天盒", description: "查看我扔的和我捞到的瓶子。" }
 ];
 
 onMounted(async () => {
