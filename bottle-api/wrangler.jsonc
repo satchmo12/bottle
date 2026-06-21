@@ -40,7 +40,7 @@
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
 	"vars": {
-		"WEB_APP_URL": "https://modulator-defective-stuffing.ngrok-free.dev/"
+		"WEB_APP_URL": "https://bottle.d7895h.workers.dev/"
 	},
 	/**
 	 * Static Assets
